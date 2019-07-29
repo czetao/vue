@@ -40,14 +40,14 @@ export default {
       },
       // 验证规则
       rules: {
-      username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }, 
-            { min: 3, max: 15, message: '长度在 3 到15 个字符', trigger: 'blur' }
-          ],
-      password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 3, max: 15, message: '长度在 3 到15 个字符', trigger: 'blur' }
-      ],
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 15, message: "长度在 3 到15 个字符", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 3, max: 15, message: "长度在 3 到15 个字符", trigger: "blur" }
+        ]
       }
     };
   },
@@ -57,15 +57,24 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //将用户名密码通过axios传到后端
-          let that = this ;
+          let that = this;
           //通过代理方式，将请求地址代理到888端口下，即解决跨域
-          this.axios.post('/api/checklogin',{      
-              username : that.loginForm.username,
-              password : that.loginForm.password                  
-          })
-          .then(response => {
-              console.log("接收后端响应请求的数据：" ,response.data)
+          this.axios
+            .post("/api/checklogin", {
+              username: that.loginForm.username,
+              password: that.loginForm.password
             })
+            .then(response => {
+              if (response.data.length) {
+                console.log("接收后端响应请求的数据：", response.data);
+                that.$message({
+                  message: "恭喜你，登录成功",
+                  type: "success"
+                });
+              } else {
+                that.$message.error("登录失败");
+              }
+            });
         } else {
           console.log("error submit!!");
           return false;
